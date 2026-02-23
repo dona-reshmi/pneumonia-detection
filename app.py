@@ -5,7 +5,7 @@ from PIL import Image
 
 st.set_page_config(page_title="PneumoAI", page_icon="🫁", layout="wide")
 
-# ---------- CUSTOM CSS ----------
+# ---------- INNOVATIVE CSS ----------
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
@@ -13,28 +13,37 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 
 body {
-    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
-    color: white;
     font-family: 'Segoe UI', sans-serif;
-}
-
-h1, h2, h3, h4 {
-    font-weight: 800;
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+    color: #fff;
 }
 
 .hero {
     text-align: center;
-    padding: 80px 20px 50px 20px;
+    padding: 100px 20px 60px 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 
 .hero-title {
     font-size: 70px;
-    margin-bottom: 20px;
+    font-weight: 900;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {transform: scale(1);}
+    50% {transform: scale(1.05);}
 }
 
 .hero-subtitle {
     font-size: 24px;
-    color: #cbd5f5;
+    color: #f0f9ff;
     margin-bottom: 40px;
 }
 
@@ -45,18 +54,17 @@ h1, h2, h3, h4 {
 
 .card {
     background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 30px;
+    border-radius: 25px;
+    padding: 40px;
     margin: 20px auto;
-    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
     max-width: 500px;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.upload-box {
-    border: 2px dashed #93c5fd;
-    border-radius: 15px;
-    padding: 30px;
-    text-align: center;
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
 }
 
 .result-normal {
@@ -75,15 +83,36 @@ h1, h2, h3, h4 {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 25px;
 }
 
 .feature-card {
     background: rgba(255,255,255,0.08);
-    border-radius: 20px;
+    border-radius: 25px;
     padding: 30px;
     width: 250px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 35px rgba(0,0,0,0.35);
+}
+
+.circular-progress {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 10px solid rgba(255,255,255,0.2);
+    border-top: 10px solid #fff;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
 }
 </style>
 """, unsafe_allow_html=True)
@@ -91,13 +120,7 @@ h1, h2, h3, h4 {
 # ---------- HERO ----------
 st.markdown('<div class="hero">', unsafe_allow_html=True)
 st.markdown('<div class="hero-title">🫁 PneumoAI</div>', unsafe_allow_html=True)
-st.markdown('<div class="hero-subtitle">AI-Powered Pneumonia Detection at Your Fingertips</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- ABOUT ----------
-st.markdown('<div class="section">', unsafe_allow_html=True)
-st.markdown("## About PneumoAI")
-st.markdown("PneumoAI is a deep learning-based AI system designed to **detect pneumonia from chest X-rays** accurately and quickly. Perfect for educational use and early detection simulations.")
+st.markdown('<div class="hero-subtitle">AI-Powered Pneumonia Detection in Seconds</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- LOAD MODEL ----------
@@ -132,32 +155,33 @@ if uploaded_file:
 
     confidence = float(prediction[0][0])
 
+    st.markdown('<div class="card">', unsafe_allow_html=True)
     if confidence > 0.5:
         st.markdown(f"<div class='result-pneumonia'>🔴 Pneumonia Detected</div>", unsafe_allow_html=True)
-        st.progress(int(confidence*100))
+        st.markdown(f"<div class='circular-progress'></div>", unsafe_allow_html=True)
         st.write(f"**Confidence:** {confidence*100:.2f}%")
     else:
         st.markdown(f"<div class='result-normal'>🟢 Normal Chest X-Ray</div>", unsafe_allow_html=True)
-        st.progress(int((1-confidence)*100))
+        st.markdown(f"<div class='circular-progress'></div>", unsafe_allow_html=True)
         st.write(f"**Confidence:** {(1-confidence)*100:.2f}%")
+    st.markdown('</div>', unsafe_allow_html=True)
 else:
     st.info("Upload an X-ray image to get diagnosis")
-
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- FEATURES ----------
 st.markdown('<div class="section">', unsafe_allow_html=True)
 st.markdown("## 🌟 Features")
-
 st.markdown('<div class="features">', unsafe_allow_html=True)
-feature_list = [
-    ("⚡ Fast Diagnosis", "Get results within seconds using AI"),
-    ("🎯 High Accuracy", "Trained on real chest X-ray data"),
-    ("💻 User-Friendly", "Simple and elegant interface"),
-    ("🧠 AI-Powered", "Deep learning-based predictions"),
+
+features = [
+    ("⚡ Fast Diagnosis", "Results in seconds"),
+    ("🎯 High Accuracy", "Trained on chest X-ray datasets"),
+    ("💻 Elegant UI", "Smooth and intuitive interface"),
+    ("🧠 AI-Powered", "Deep learning based predictions")
 ]
 
-for icon, desc in feature_list:
+for icon, desc in features:
     st.markdown(f'<div class="feature-card"><h3>{icon}</h3><p>{desc}</p></div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
