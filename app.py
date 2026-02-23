@@ -5,7 +5,7 @@ from PIL import Image
 
 st.set_page_config(page_title="PneumoAI", page_icon="🫁", layout="wide")
 
-# ---------- INNOVATIVE CSS ----------
+# ---------- CUSTOM CSS ----------
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
@@ -14,105 +14,91 @@ header {visibility: hidden;}
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+    background: linear-gradient(135deg, #89f7fe, #66a6ff, #b0e0ff);
     color: #fff;
+    margin: 0;
+    padding: 0;
 }
 
+/* HERO */
 .hero {
     text-align: center;
     padding: 100px 20px 60px 20px;
-    animation: fadeIn 2s ease-in-out;
 }
-
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-20px);}
-    to {opacity: 1; transform: translateY(0);}
-}
-
 .hero-title {
     font-size: 70px;
     font-weight: 900;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    text-shadow: 2px 2px 15px rgba(0,0,0,0.2);
     animation: pulse 2s infinite;
 }
-
 @keyframes pulse {
-    0%, 100% {transform: scale(1);}
+    0%,100% {transform: scale(1);}
     50% {transform: scale(1.05);}
 }
-
 .hero-subtitle {
     font-size: 24px;
     color: #f0f9ff;
     margin-bottom: 40px;
 }
 
+/* SECTIONS */
 .section {
-    padding: 60px 40px;
+    padding: 60px 20px;
     text-align: center;
 }
 
+/* CARDS */
 .card {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.12);
     border-radius: 25px;
     padding: 40px;
     margin: 20px auto;
-    box-shadow: 0 0 30px rgba(0,0,0,0.2);
-    max-width: 500px;
+    max-width: 450px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
     transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
 }
 
-.result-normal {
-    color: #22c55e;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.result-pneumonia {
-    color: #ef4444;
-    font-size: 28px;
-    font-weight: bold;
-}
-
+/* FEATURES GRID */
 .features {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    justify-items: center;
+    margin-top: 40px;
 }
-
 .feature-card {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.12);
     border-radius: 25px;
     padding: 30px;
-    width: 250px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    width: 220px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
     transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 35px rgba(0,0,0,0.35);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
 }
 
-.circular-progress {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 10px solid rgba(255,255,255,0.2);
-    border-top: 10px solid #fff;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
+/* RESULTS */
+.result-text {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 15px;
 }
+.result-normal { color: #22c55e; }
+.result-pneumonia { color: #ef4444; }
 
-@keyframes spin {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 60px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -157,12 +143,10 @@ if uploaded_file:
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
     if confidence > 0.5:
-        st.markdown(f"<div class='result-pneumonia'>🔴 Pneumonia Detected</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='circular-progress'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='result-text result-pneumonia'>🔴 Pneumonia Detected</div>", unsafe_allow_html=True)
         st.write(f"**Confidence:** {confidence*100:.2f}%")
     else:
-        st.markdown(f"<div class='result-normal'>🟢 Normal Chest X-Ray</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='circular-progress'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='result-text result-normal'>🟢 Normal Chest X-Ray</div>", unsafe_allow_html=True)
         st.write(f"**Confidence:** {(1-confidence)*100:.2f}%")
     st.markdown('</div>', unsafe_allow_html=True)
 else:
@@ -172,22 +156,20 @@ st.markdown('</div>', unsafe_allow_html=True)
 # ---------- FEATURES ----------
 st.markdown('<div class="section">', unsafe_allow_html=True)
 st.markdown("## 🌟 Features")
+
 st.markdown('<div class="features">', unsafe_allow_html=True)
-
 features = [
-    ("⚡ Fast Diagnosis", "Results in seconds"),
-    ("🎯 High Accuracy", "Trained on chest X-ray datasets"),
+    ("⚡ Fast Diagnosis", "Get results in seconds"),
+    ("🎯 High Accuracy", "Trained on real chest X-ray data"),
     ("💻 Elegant UI", "Smooth and intuitive interface"),
-    ("🧠 AI-Powered", "Deep learning based predictions")
+    ("🧠 AI-Powered", "Deep learning based predictions"),
 ]
-
 for icon, desc in features:
     st.markdown(f'<div class="feature-card"><h3>{icon}</h3><p>{desc}</p></div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------- FOOTER ----------
-st.markdown('<div class="section">', unsafe_allow_html=True)
-st.markdown("<hr>")
-st.markdown("<center>🧠 Developed with Deep Learning | 🏥 For Educational Use Only</center>")
+st.markdown('<div class="footer">', unsafe_allow_html=True)
+st.markdown("🧠 Developed with Deep Learning | 🏥 For Educational Use Only")
 st.markdown('</div>', unsafe_allow_html=True)
