@@ -3,50 +3,52 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 
-st.set_page_config(page_title="PneumoAI", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="PneumoAI", page_icon="🫁", layout="wide")
 
-# ---------- CUSTOM CSS ----------
+# ---------- REMOVE STREAMLIT DEFAULT HEADER ----------
 st.markdown("""
 <style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
 
+# ---------- GLOBAL STYLING ----------
+st.markdown("""
+<style>
 body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-}
-
-.main {
-    background: transparent;
+    background: linear-gradient(135deg, #eef2f3, #d9e4f5);
 }
 
 .hero {
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 30px;
+    padding-top: 80px;
+    padding-bottom: 40px;
 }
 
 .hero h1 {
-    font-size: 60px;
+    font-size: 65px;
     font-weight: 800;
-    background: linear-gradient(90deg, #00f5ff, #00ff87);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #1f2937;
 }
 
 .hero p {
     font-size: 20px;
-    color: #d1d5db;
+    color: #4b5563;
 }
 
-.glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
+.upload-section {
+    background: white;
     padding: 40px;
-    margin-top: 40px;
-    box-shadow: 0px 8px 32px rgba(0,0,0,0.3);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    width: 60%;
+    margin: auto;
 }
 
 .result-box {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
     margin-top: 20px;
 }
@@ -57,8 +59,8 @@ body {
 # ---------- HERO SECTION ----------
 st.markdown("""
 <div class="hero">
-    <h1>🧠 PneumoAI</h1>
-    <p>Next-Generation AI System for Intelligent Pneumonia Detection</p>
+    <h1>🫁 PneumoAI</h1>
+    <p>AI-Powered Pneumonia Detection System</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -73,20 +75,22 @@ interpreter = load_model()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-# ---------- GLASS CARD ----------
-st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+# ---------- UPLOAD CARD ----------
+st.markdown('<div class="upload-section">', unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("📤 Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload Chest X-Ray Image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, use_column_width=True)
+
+    # Resize display smaller
+    st.image(image, width=300)
 
     img = image.resize((150,150))
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0).astype(np.float32)
 
-    with st.spinner("AI analyzing medical image..."):
+    with st.spinner("Analyzing medical image..."):
         interpreter.set_tensor(input_details[0]['index'], img_array)
         interpreter.invoke()
         prediction = interpreter.get_tensor(output_details[0]['index'])
@@ -96,9 +100,9 @@ if uploaded_file is not None:
     st.markdown('<div class="result-box">', unsafe_allow_html=True)
 
     if confidence > 0.5:
-        st.markdown(f"🔴 **Pneumonia Detected**  \nConfidence: {confidence*100:.2f}%")
+        st.markdown(f"🔴 Pneumonia Detected<br>Confidence: {confidence*100:.2f}%", unsafe_allow_html=True)
     else:
-        st.markdown(f"🟢 **Normal Chest X-Ray**  \nConfidence: {(1-confidence)*100:.2f}%")
+        st.markdown(f"🟢 Normal Chest X-Ray<br>Confidence: {(1-confidence)*100:.2f}%", unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
